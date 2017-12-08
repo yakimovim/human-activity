@@ -1,0 +1,89 @@
+# Read information about activities names
+
+activity_labels <- read.table("UCI HAR Dataset/activity_labels.txt", 
+                             header = FALSE, 
+                             sep = " ", 
+                             colClasses = c("numeric", "character"),
+                             col.names = c("activityId", "activityName"))
+
+# Read information about features/variables names
+
+features <- read.table("UCI HAR Dataset/features.txt", 
+                             header = FALSE, 
+                             sep = " ", 
+                             colClasses = c("numeric", "character"),
+                             col.names = c("featureId", "featureName"))
+
+# Get only variables for mean and standard deviation
+
+mean_std_features <- features$featureName[grepl("mean\\(|std\\(", features$featureName)]
+
+# Train data set
+
+# Read information about subjects for each observation
+
+train_subject <- read.table("UCI HAR Dataset/train/subject_train.txt", 
+                          header = FALSE, 
+                          sep = " ", 
+                          colClasses = c("numeric"),
+                          col.names = c("subjectId"))
+
+# Read information about activities for each observation
+
+train_labels <- read.table("UCI HAR Dataset/train/y_train.txt", 
+                          header = FALSE, 
+                          sep = " ", 
+                          colClasses = c("numeric"),
+                          col.names = c("activityId"))
+
+# Read data
+
+train_data <- strsplit(readLines("UCI HAR Dataset/train/X_train.txt"), split = " ")
+train_data <- lapply(train_data, function(v) { v[v != ""] })
+train_data <- lapply(train_data, as.numeric)
+train_data <- data.frame(matrix(unlist(train_data), nrow = length(train_data), byrow=TRUE))
+names(train_data) <- features$featureName
+
+# Choose only columns for mean and standard deviation
+
+train_data <- train_data[,mean_std_features]
+
+# Join with information about subjects and activities
+
+train_data <- cbind(train_subject, train_labels, train_data)
+
+# Test data set
+
+# Read information about subjects for each observation
+
+test_subject <- read.table("UCI HAR Dataset/test/subject_test.txt", 
+                          header = FALSE, 
+                          sep = " ", 
+                          colClasses = c("numeric"),
+                          col.names = c("subjectId"))
+
+# Read information about activities for each observation
+
+test_labels <- read.table("UCI HAR Dataset/test/y_test.txt", 
+                         header = FALSE, 
+                         sep = " ", 
+                         colClasses = c("numeric"),
+                         col.names = c("activityId"))
+
+# Read data
+
+test_data <- strsplit(readLines("UCI HAR Dataset/test/X_test.txt"), split = " ")
+test_data <- lapply(test_data, function(v) { v[v != ""] })
+test_data <- lapply(test_data, as.numeric)
+test_data <- data.frame(matrix(unlist(test_data), nrow = length(test_data), byrow=TRUE))
+names(test_data) <- features$featureName
+
+# Choose only columns for mean and standard deviation
+
+test_data <- test_data[,mean_std_features]
+
+# Join with information about subjects and activities
+
+test_data <- cbind(test_subject, test_labels, test_data)
+
+all_data <- rbind(test_data, train_data)
