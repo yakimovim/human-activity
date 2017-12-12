@@ -1,3 +1,4 @@
+# 'dplyr' R package must be installed.
 library(dplyr)
 
 # Read information about activities names
@@ -93,6 +94,8 @@ test_data <- test_data[,mean_std_features]
 # Join with information about subjects and activities
 
 test_data <- cbind(test_subject, test_labels, test_data)
+
+# Bind training and testing data together.
 
 all_data <- rbind(test_data, train_data)
 
