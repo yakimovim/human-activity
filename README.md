@@ -23,6 +23,6 @@ You must be aware that the script required 'dplyr' R package installed.
 * After that the same process is repeated for the testing data set. In the end we have 'test_data' frame with the same columns as in the 'train_data' frame.
 * Then we merge training and testing data together into 'all_data' frame.
 * We group this frame by subject and activity into 'all_data_by_subject_and_activity' frame.
-* After that we calculate average value (mean) for each group using 'summarise_each' function. The result is stored into 'averaged_data_by_subject_and_activity' frame.
+* After that we calculate average value (mean) for each group using 'summarise_all' function. The result is stored into 'averaged_data_by_subject_and_activity' frame.
 * And we clean names of variables/columns by removing '(' and ')' symbols.
 * In the end we store the result into 'averaged_data_by_subject_and_activity.txt' file using 'write.table' function.

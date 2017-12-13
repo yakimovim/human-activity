@@ -38,7 +38,7 @@ train_labels <- read.table("UCI HAR Dataset/train/y_train.txt",
                           sep = " ", 
                           colClasses = c("numeric"),
                           col.names = c("activityId"))
-train_labels <- merge(train_labels, activity_labels, by.x = "activityId", by.y = "activityId")
+train_labels <- inner_join(train_labels, activity_labels, by = "activityId")
 train_labels <- data.frame(train_labels[, "activityName"])
 names(train_labels) <- "activityName"
 
@@ -75,7 +75,7 @@ test_labels <- read.table("UCI HAR Dataset/test/y_test.txt",
                          sep = " ", 
                          colClasses = c("numeric"),
                          col.names = c("activityId"))
-test_labels <- merge(test_labels, activity_labels, by.x = "activityId", by.y = "activityId")
+test_labels <- inner_join(test_labels, activity_labels, by = "activityId")
 test_labels <- data.frame(test_labels[, "activityName"])
 names(test_labels) <- "activityName"
 
@@ -98,14 +98,15 @@ test_data <- cbind(test_subject, test_labels, test_data)
 # Bind training and testing data together.
 
 all_data <- rbind(test_data, train_data)
+all_data <- tbl_df(all_data)
 
 # Group data by subject and activity
 
-all_data_by_subject_and_activity <- group_by(all_data, subjectId, activityName)
+all_data_by_subject_and_activity <- group_by(all_data, subjectId, activityName, add = TRUE)
 
 # Calculate averages of variables
 
-averaged_data_by_subject_and_activity <- summarise_each(all_data_by_subject_and_activity, funs(mean))
+averaged_data_by_subject_and_activity <- summarise_all(all_data_by_subject_and_activity, funs(mean))
 
 # Clean variable names from brackets
 
